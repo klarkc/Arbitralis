@@ -1,11 +1,13 @@
 module Main (main) where
 
+import Debug
 import Prelude
   ( Unit
   , ($)
   , (<>)
   , bind
   , discard
+  , show
   )
 import Data.String
   ( Pattern(Pattern)
@@ -51,7 +53,7 @@ taskQueue = "analyze-text"
 
 startWorker :: Aff Unit
 startWorker = do
-  workflowsPath <- resolve "../Workflows/index.js"
+  workflowsPath <- liftEffect $ resolve "../Workflows/index.js"
   workflowBundle <-
     bundleWorkflowCode
       -- TODO use Node.URL href in workflowsPath
