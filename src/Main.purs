@@ -83,7 +83,7 @@ runTemporal text =
     con <- connect defaultConnectionOptions
     client <- liftEffect $ createClient defaultClientOptions
     wfHandler <-
-      startWorkflow client "analyze-text"
+      startWorkflow client "analyzeText"
         { taskQueue
         , workflowId: "analyze-text-1"
         , args: [ text ]
