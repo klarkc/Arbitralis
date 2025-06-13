@@ -93,13 +93,6 @@
               "temporalite start --namespace default"
             '';
           };
-          vm = name: pkgs.writeShellApplication {
-            inherit name;
-            text = ''
-              export USE_TMPDIR=0
-              ${self.nixosConfigurations.${name}.config.formats.vm-nogui}
-            '';
-          };
           # helpers
           hooks = inputs.hooks.lib.${system}.run {
             src = ./frontend;
