@@ -56,3 +56,29 @@ Adicionar um endpoint GET /search-term?term=... que retorne:
 ## Suporte
 
 Para tirar dúvidas sobre o processo envie uma mensagem diretamente a um especialista no chat da plataforma. 
+
+## Instruções para seguir
+
+### Pré-requisitos
+
+Antes de começar, certifique-se de ter instalado em sua máquina o Nix:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install --determinate
+```
+
+### Como Executar o Projeto
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/klarkc/Arbitralis
+cd Arbitralis
+```
+2. Entre no shell de desenvolvimento:
+```bash
+nix develop
+```
+3. Execute o ambiente de desenvolvimento:
+```bash
+dev
+```
