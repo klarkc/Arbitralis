@@ -36,6 +36,7 @@
               wrapProgram $out/bin/node --set NODE_OPTIONS $NODE_OPTIONS
             '';
           purs-nix = inputs.purs-nix { inherit system; };
+          node_modules = pkgs.importNpmLock.buildNodeModules { inherit (pkgs) nodejs; npmRoot = ./.; } + /node_modules;
           ps = purs-nix.purs
             {
               # Project dir (src, test)
@@ -46,9 +47,31 @@
                 [
                   debug
                   prelude
+                  stringutils
                   console
                   effect
+                  aff
+                  js-promise
+                  js-promise-aff
+                  foreign
+                  foreign-object
+                  parallel
+                  httpurple
+                  httpurple-argonaut
+                  argonaut
+                  fetch
+                  fetch-argonaut
+                  node-process
+                  node-buffer
+                  monad-logger
+                  record
+                  free
                 ];
+              # FFI dependencies
+              foreign."Temporal.Client" = { inherit node_modules; };
+              foreign."Temporal.Client.Connection" = { inherit node_modules; };
+              foreign."Temporal.Node.Worker" = { inherit node_modules; };
+              foreign."Temporal.Workflow" = { inherit node_modules; };
               # compiler
               inherit purescript nodejs;
             };
@@ -82,7 +105,7 @@
             runtimeInputs = devRuntimeInputs;
             text = ''concurrent \
               "purs-watch run"\
-              "temporalite start --namespace default"
+              "temporalite start --namespace default --ephemeral"
             '';
           };
           dev-debug = pkgs.writeShellApplication {
@@ -90,7 +113,7 @@
             runtimeInputs = devRuntimeInputs ++ [ ps-command ];
             text = ''concurrent \
               "TEMPORAL_DEBUG=1 NODE_OPTIONS=--inspect-brk purs-nix run"\
-              "temporalite start --namespace default"
+              "temporalite start --namespace default --ephemeral"
             '';
           };
           # helpers

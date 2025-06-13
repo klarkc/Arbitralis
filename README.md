@@ -82,3 +82,15 @@ nix develop
 ```bash
 dev
 ```
+
+- Uma inspetor do temporal estará disponível em http://localhost:8233
+- O servidor escutará requisições em http://localhost:8080
+
+## Endpoints
+
+## POST `/analyze-text`
+
+```bash
+curl --data '{ "text": "Hello world!" }' "http://localhost:8080/analyze-text"
+```
+
