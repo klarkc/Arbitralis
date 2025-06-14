@@ -4,8 +4,11 @@ module Temporal.Node.Platform
   , OperationF
   , runOperation
   , liftLogger
+  , awaitAff
+  , performEffect
   , awaitFetch
   , awaitFetch_
+  , lookupEnv
   ) where
 
 import Data.Log.Level (LogLevel) as Exports
@@ -14,6 +17,7 @@ import Fetch (Method(..), Response, fetch) as Exports
 import Prelude
   ( class Show
   , ($)
+  , (<$>)
   , (<>)
   , (>=)
   , (<)
@@ -22,11 +26,12 @@ import Prelude
   , discard
   , show
   )
-import Control.Monad.Free (Free, foldFree, liftF, hoistFree)
+import Control.Monad.Free (Free, foldFree, liftF, hoistFree, wrap)
 import Data.NaturalTransformation (type (~>))
 import Data.String (take)
 import Fetch (Response) as F
 import Fetch.Argonaut.Json (fromJson)
+import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Data.Argonaut (class DecodeJson)
@@ -38,9 +43,13 @@ import Temporal.Logger
   , error
   , logAndThrow
   ) as TL
+-- TODO inject platform dependency
+import Temporal.Node.Platform.Impl (lookupEnv) as PN
 
 data OperationF n
   = LiftLogger (TL.LoggerF n)
+  | LookupEnv String (String -> n)
+  | PerformEffect (Effect n)
   | AwaitAff (Aff n)
 
 type Operation n = Free OperationF n
@@ -49,7 +58,10 @@ liftLogger :: TL.Logger ~> Operation
 liftLogger = hoistFree LiftLogger
 
 awaitAff :: Aff ~> Operation
-awaitAff aff = liftF $ AwaitAff  aff
+awaitAff aff = liftF $ AwaitAff aff
+
+performEffect :: Effect ~> Operation
+performEffect eff = liftF $ PerformEffect eff
   
 awaitFetch :: forall @jsonError @json. DecodeJson json => DecodeJson jsonError => Show json => Show jsonError => Aff F.Response -> Operation json
 awaitFetch res = do
@@ -82,9 +94,14 @@ awaitFetch_ res = do
          TL.error $ "ERROR " <> show err
          TL.logAndThrow $ "Request failed with " <> show status <> " status"
 
+lookupEnv :: String -> Operation String
+lookupEnv s = wrap $ LookupEnv s pure
+
 operate :: OperationF ~> Aff
 operate = case _ of
   LiftLogger logF -> liftEffect $ TL.runLogger $ liftF logF
+  LookupEnv s reply -> reply <$> (liftEffect $ PN.lookupEnv s)
+  PerformEffect eff -> liftEffect $ eff
   AwaitAff aff -> aff
 
 runOperation :: Operation ~> Aff

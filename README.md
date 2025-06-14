@@ -80,7 +80,7 @@ nix develop
 ```
 3. Execute o ambiente de desenvolvimento:
 ```bash
-dev
+OPENAI_API_KEY="sk-proj-..." dev
 ```
 
 - Uma inspetor do temporal estará disponível em http://localhost:8233
@@ -91,6 +91,11 @@ dev
 ## POST `/analyze-text`
 
 ```bash
-curl --data '{ "text": "Hello world!" }' "http://localhost:8080/analyze-text"
+curl --data '{ "text": "Este app conta quatas palavras tem na string" }' "http://localhost:8080/analyze-text"
 ```
 
+Resposta esperada:
+
+```json
+{"textWords":8}
+```

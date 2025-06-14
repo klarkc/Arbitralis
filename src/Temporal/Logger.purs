@@ -97,3 +97,4 @@ logger = case _ of
 
 runLogger :: Logger ~> Effect
 runLogger p = foldFree logger p
+

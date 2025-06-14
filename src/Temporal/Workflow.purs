@@ -64,6 +64,7 @@ import Temporal.Logger
   , liftEither
   , liftMaybe
   ) as TL
+import Temporal.Logger.Argonaut as TLA
 
 type ActivityJson = Fn1 Json (Promise Json)
 
@@ -121,9 +122,7 @@ useInput :: forall act inp out. Json -> Workflow act inp out inp
 useInput = liftExchange <<< TE.useInput
 
 readActivityOutput :: forall act inp out actOut. DecodeJson actOut => Json -> Workflow act inp out actOut
-readActivityOutput aOutFr = liftLogger
-  $ TL.liftEither
-  $ (DN.wrap <<< error <<< show) `lmap` decodeJson aOutFr
+readActivityOutput = liftLogger <<< TLA.decode
 
 proxyActivities :: forall act inp out. ProxyActivityOptions -> Workflow act inp out (Record act)
 proxyActivities options = wrap $ ProxyActivities options pure
