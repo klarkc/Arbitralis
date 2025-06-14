@@ -1,6 +1,7 @@
 module Node.OpenAI.Activities 
   ( countWords
   , frequentWords
+  , sentiment
   ) where
 
 import Prelude (($), (<>), bind, discard, pure)
@@ -32,15 +33,22 @@ aiJson system p i = liftOperation do
   liftLogger $ decode' out
 
 countWords :: ExchangeI -> Promise ExchangeO
-countWords i = unsafeRunActivity @String @(Maybe Int) do
+countWords i = unsafeRunActivity @String @Int do
   input <- useInput i
   let prompt = "The number of words from the INPUT."
   out <- aiJson "" prompt input
-  output $ Just out
+  output out
 
 frequentWords :: ExchangeI -> Promise ExchangeO
 frequentWords i = unsafeRunActivity @String @(Array String) do
   input <- useInput i
   let prompt = "The 5 most frequent words from the INPUT (ignoring stopwords, if possible)."
+  out <- aiJson "" prompt input
+  output out
+
+sentiment :: ExchangeI -> Promise ExchangeO
+sentiment i = unsafeRunActivity @String @String do
+  input <- useInput i
+  let prompt = "A summary of the sentiment of the INPUT."
   out <- aiJson "" prompt input
   output out

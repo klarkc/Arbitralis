@@ -6,6 +6,7 @@ module Node.Activities
 import Node.OpenAI.Activities
   ( countWords
   , frequentWords
+  , sentiment
   )
 import Workflows (ActivitiesI)
 
@@ -15,4 +16,5 @@ createActivities :: Activities
 createActivities =
   { countWords
   , frequentWords
+  , sentiment
   }

@@ -91,7 +91,7 @@ OPENAI_API_KEY="sk-proj-..." dev
 ## POST `/analyze-text`
 
 ```bash
-curl --data '{ "text": "Este app conta quantas palavras tem no texto e as palavras mais frequentes no texto" }' "http://localhost:8080/analyze-text"
+curl --data '{ "text": "Este app conta quantas palavras tem no texto, as palavras mais frequentes no texto e um resumo do sentimento do texto" }' "http://localhost:8080/analyze-text"
 
 ```
 
@@ -100,13 +100,14 @@ Resposta esperada:
 ```json
 [
   {
-    "textWords": 14,
+    "textWords": 22,
+    "sentiment": "neutral",
     "frequentWords": [
-      "palavras",
       "texto",
-      "mais",
+      "palavras",
       "frequentes",
-      "conta"
+      "conta",
+      "sentimento"
     ]
   }
 ]
