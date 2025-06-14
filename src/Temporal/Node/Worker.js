@@ -8,6 +8,10 @@ export function runWorkerImpl(worker) {
 	return worker.run()
 }
 
+export function shutdownWorkerImpl(worker) {
+	worker.shutdown()
+}
+
 export function bundleWorkflowCodeImpl(options) {
 	const webpackConfigHook = (config) => {
 		return config

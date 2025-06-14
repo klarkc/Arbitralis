@@ -1,26 +1,16 @@
 module Workflows
   ( ActivitiesI_
   , ActivitiesI
+  , AnalyzeTextResult
   , analyzeText
   ) where
 
 import Prelude
-  ( (==)
-  , ($)
-  , (<$>)
-  , (>)
-  , (&&)
-  , (/=)
+  ( ($)
   , bind
-  , discard
-  , show
-  , pure
   )
 import Promise (Promise)
-import Data.Maybe (Maybe(Just, Nothing))
-import Data.Array (filter, length, head)
-import Data.DateTime(DateTime(DateTime))
-import Data.String (toUpper)
+import Data.Maybe (Maybe(Just))
 import Temporal.Workflow
   ( ActivityJson
   , useInput
@@ -28,13 +18,9 @@ import Temporal.Workflow
   , defaultProxyOptions
   , output
   , runActivity
-  , fromMaybe
-  , liftLogger
-  , liftedMaybe
   )
 import Temporal.Workflow.Unsafe (unsafeRunWorkflow)
-import Temporal.Exchange (ISO(ISO), ExchangeI, ExchangeO)
-import Temporal.Logger (info, warn, liftMaybe)
+import Temporal.Exchange (ExchangeI, ExchangeO)
 
 type ActivitiesJson = ActivitiesI_ ActivityJson
 

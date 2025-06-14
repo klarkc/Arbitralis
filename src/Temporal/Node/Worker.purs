@@ -2,6 +2,7 @@ module Temporal.Node.Worker
   ( Worker
   , createWorker
   , runWorker
+  , shutdownWorker
   , bundleWorkflowCode
   ) where
 
@@ -11,7 +12,9 @@ import Prelude
   , Unit
   )
 import Data.Function.Uncurried (Fn1, runFn1)
+import Effect (Effect)
 import Effect.Aff (Aff)
+import Effect.Uncurried (EffectFn1, runEffectFn1)
 import Promise.Aff (Promise, toAff)
 import Foreign.Object (Object, fromHomogeneous)
 import Type.Row.Homogeneous (class Homogeneous)
@@ -54,6 +57,11 @@ runWorker_ = runFn1 runWorkerImpl
 
 runWorker :: Worker -> Aff Unit
 runWorker = toAff <<< runWorker_
+
+foreign import shutdownWorkerImpl :: EffectFn1 Worker Unit
+
+shutdownWorker :: Worker -> Effect Unit
+shutdownWorker = runEffectFn1 shutdownWorkerImpl
 
 foreign import bundleWorkflowCodeImpl :: Fn1 BundleOptions (Promise WorkflowBundle)
 
