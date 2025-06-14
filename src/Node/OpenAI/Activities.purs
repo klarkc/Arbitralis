@@ -1,4 +1,7 @@
-module Node.OpenAI.Activities (countWords) where
+module Node.OpenAI.Activities 
+  ( countWords
+  , frequentWords
+  ) where
 
 import Prelude (($), (<>), bind, discard, pure)
 import Data.Argonaut as Argonaut
@@ -34,3 +37,10 @@ countWords i = unsafeRunActivity @String @(Maybe Int) do
   let prompt = "The number of words from the INPUT."
   out <- aiJson "" prompt input
   output $ Just out
+
+frequentWords :: ExchangeI -> Promise ExchangeO
+frequentWords i = unsafeRunActivity @String @(Array String) do
+  input <- useInput i
+  let prompt = "The 5 most frequent words from the INPUT (ignoring stopwords, if possible)."
+  out <- aiJson "" prompt input
+  output out

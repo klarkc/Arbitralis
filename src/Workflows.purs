@@ -27,12 +27,14 @@ type ActivitiesJson = ActivitiesI_ ActivityJson
 type ActivitiesI_ :: forall k. k -> Row k
 type ActivitiesI_ actFr =
   ( countWords :: actFr
+  , frequentWords :: actFr
   )
 
 type ActivitiesI = ActivitiesI_ (ExchangeI -> Promise ExchangeO)
 
 type AnalyzeTextResult =
   { textWords :: Int
+  , frequentWords :: Array String
   }
 
 analyzeText :: ExchangeI -> Promise ExchangeO
@@ -40,4 +42,5 @@ analyzeText i = unsafeRunWorkflow @ActivitiesJson @String @(Maybe AnalyzeTextRes
   act <- proxyActivities defaultProxyOptions
   text <- useInput i
   textWords <- runActivity act.countWords text
-  output $ Just { textWords }
+  frequentWords <- runActivity act.frequentWords text
+  output $ Just { textWords, frequentWords }
